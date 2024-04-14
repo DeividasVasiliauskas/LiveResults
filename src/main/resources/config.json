@@ -1,0 +1,9 @@
+{
+  "P_NAME": "'LB Animal'",
+  "DB_NAME": "LB animal",
+  "USER": "postgres",
+  "PASSWORD": "dbpass",
+  "HOST": "localhost",
+  "PORT": "5432",
+  "DELTA": 4
+}
