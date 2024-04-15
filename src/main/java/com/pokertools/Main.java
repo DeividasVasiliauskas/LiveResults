@@ -1,6 +1,8 @@
 package com.pokertools;
 
 import org.json.JSONObject;
+
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
@@ -25,21 +27,28 @@ public class Main {
         LocalDateTime month = LocalDateTime.now().withDayOfMonth(1).withHour(4).withMinute(0).withSecond(0).withNano(0);
         LocalDateTime year = LocalDateTime.now().withDayOfYear(1).withHour(4).withMinute(0).withSecond(0).withNano(0);
 
-
+        Timestamp todayTimestamp = Timestamp.valueOf(today);
 
         Database db = new Database();
-        System.out.println(today);
-        System.out.println(today.toLocalDate());
 
-        //System.out.println(db.getDates(java.sql.Date.valueOf(today.toLocalDate())));
+        for (int i = 0; i < 1000; i++){
 
+            String name = db.getPlayerName();
+            double buyIn = 0.93;
 
+            int cntTourneys = db.cntTodayPlayed(name, todayTimestamp, buyIn);
+            double chEv = db.avgEvChipsWon(name, todayTimestamp, buyIn);
+            double netWon = db.netWon(name, todayTimestamp, buyIn);
+            double evDealWon = db.evDealWon(cntTourneys, chEv, buyIn);
 
-        ArrayList<java.sql.Date> dates = db.getDates(java.sql.Date.valueOf(today.toLocalDate()));
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        System.out.println(dates.size());
-        for (java.sql.Date date : dates) {
-            System.out.println(sdf.format(date));
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+
+            }
+            System.out.printf("Today Played: %s Today ChEV: %s NET Won: %s EV Won: %s ",
+                    cntTourneys, chEv, netWon, evDealWon);
         }
 
 
