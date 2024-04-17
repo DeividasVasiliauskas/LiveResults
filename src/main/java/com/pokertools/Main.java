@@ -20,7 +20,7 @@ public class Main {
 
         int delta = config.getInt("DELTA");
 
-        double RAKE = 0.35;
+        double RAKE = 0.93;
         double VIPBONUS = 3.5;
 
         LocalDateTime today = LocalDateTime.now().withHour(4).withMinute(0).withSecond(0).withNano(0);
@@ -34,7 +34,7 @@ public class Main {
         for (int i = 0; i < 1000; i++){
 
             String name = db.getPlayerName();
-            double buyIn = 0.93;
+            double buyIn = 0.23;
 
             int cntTourneys = db.cntTodayPlayed(name, todayTimestamp, buyIn);
             double chEv = db.avgEvChipsWon(name, todayTimestamp, buyIn);
@@ -42,15 +42,42 @@ public class Main {
             double evDealWon = db.evDealWon(cntTourneys, chEv, buyIn);
 
             try {
-                Thread.sleep(1000);
+                Thread.sleep(10000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
 
             }
             System.out.printf("Today Played: %s Today ChEV: %s NET Won: %s EV Won: %s ",
                     cntTourneys, chEv, netWon, evDealWon);
+            System.out.println("_____________");
         }
 
+    // TODO: Add command line arguments, TIMEFRAME (today, month, year), buyin, bool for show hrs played.
 
+
+
+
+    }
+
+    public static void parseArgs(String[] args){
+        for (int i = 0; i < args.length; i++){
+
+            switch (args[i]){
+                // if we find a proper flag, next argument is the value
+                // Check for out of bounds
+
+                case "-t":
+                    System.out.println("Method for timeframe parse" + args[i+1]);
+                    break;
+                case "-b":
+                    System.out.println("Method for buyin parse" + args[i+1]);
+                    break;
+                case "-h":
+                    System.out.println("If this  flag is present, show hours played" + args[i+1]);
+                    break;
+                default:
+                    System.out.println("Invalid flag: ");
+            }
+        }
     }
 }
