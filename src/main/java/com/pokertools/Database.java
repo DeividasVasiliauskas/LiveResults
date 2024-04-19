@@ -22,6 +22,12 @@ public class Database {
     private String delta;
     private int pid;
 
+    // args
+
+    private String timeFrame;
+    private double buyIn;
+    private boolean showHours;
+
 
     public Database() {
         this.jsonReader = new JsonReader();
@@ -35,6 +41,57 @@ public class Database {
         this.delta = a.get("DELTA").toString();
         this.pid = getPid(this.playerName);
 
+        this.timeFrame = timeFrame;
+        this.buyIn = buyIn;
+        this.showHours = showHours;
+
+    }
+
+    public void showStats(){
+        // Prints out the stats
+        String buyIn;
+        Timestamp today;
+        Timestamp month = Timestamp.valueOf(LocalDateTime.now().withDayOfMonth(1).withHour(4).withMinute(0).
+                withSecond(0).withNano(0));
+        Timestamp year = Timestamp.valueOf(LocalDateTime.now().withDayOfYear(1).withHour(4).withMinute(0).
+                withSecond(0).withNano(0));
+
+        // we need to account time when we go past 00:00
+        if (LocalDateTime.now().getHour() < 10) {
+            today = Timestamp.valueOf(LocalDateTime.now().withHour(4).withMinute(0).withSecond(0).minusDays(1));
+        }else {
+            today = Timestamp.valueOf(LocalDateTime.now().withHour(4).withMinute(0).withSecond(0));
+        }
+
+
+        if (this.buyIn > 0){buyIn = String.valueOf(this.buyIn) + "s:"; }else{buyIn = "";}
+
+        switch (this.timeFrame){
+            case "today":
+
+                int todayPlayed = this.tourneysPlayed(this.playerName, today, this.buyIn);
+                double chEV = this.avgEvChipsWon(this.playerName, today, this.buyIn);
+                double netWon = this.netWon(this.playerName, today, this.buyIn);
+                double evWon = this.evDealWon(todayPlayed, chEV, this.buyIn);
+
+                System.out.printf(buyIn + "Today played: %s Chip Ev: %s Net Won: %s Ev Won: %s",
+                        todayPlayed, chEV, netWon, evWon);
+                break;
+            case "month":
+
+
+                System.out.println(buyIn + "This Month played: Chip Ev: Net Won: Ev Won:");
+                break;
+            case "year":
+                System.out.println(buyIn + "This Year played: Chip Ev: Net Won: Ev Won:");
+                break;
+            case "a":
+                System.out.println(buyIn + "All Time played: Chip Ev: Net Won: Ev Won:");
+                break;
+            default:
+                System.out.println(buyIn + "Today played: Chip Ev: Net Won: Ev Won:");
+
+        }
     }
 
     public Connection connect() {
@@ -97,7 +154,7 @@ public class Database {
         return dates;
     }
 
-    public int cntTodayPlayed(String playerName, Timestamp date, double buyin){
+    public int tourneysPlayed(String playerName, Timestamp date, double buyin){
         Connection conn = connect();
         int cnt = 0;
         try {
@@ -434,5 +491,29 @@ public class Database {
 
     public String getDelta() {
         return delta;
+    }
+
+    public double getBuyIn() {
+        return buyIn;
+    }
+
+    public void setBuyIn(double buyIn) {
+        this.buyIn = buyIn;
+    }
+
+    public boolean isShowHours() {
+        return showHours;
+    }
+
+    public void setShowHours(boolean showHours) {
+        this.showHours = showHours;
+    }
+
+    public String getTimeFrame() {
+        return timeFrame;
+    }
+
+    public void setTimeFrame(String timeFrame) {
+        this.timeFrame = timeFrame;
     }
 }
